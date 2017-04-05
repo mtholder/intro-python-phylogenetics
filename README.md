@@ -58,11 +58,12 @@ In the next empty row enter your initials, and then the scientific
  names of 3 different species - one in each of the next three columns.
  
 ### 2. Sketch of tasks to be performed
-The mini-tasks to be performed can be broken up into several pieces.
-It is often convenient to write a high-level control script that can run an entire pipeline.
 
-So we'll need the following teams
-
+### 3. Tasks 
+We'll need teams to do each of the following tasks.
+Ideally, we'd work in pairs.
+But if you'd prefer to work alone, just pick a task and come up with your
+own implementation.
 
 #### 3A: fetch-query-data team
 The  **fetch-the-query-data** task is to 
