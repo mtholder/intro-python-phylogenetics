@@ -37,6 +37,7 @@ We could think of it as the command line interface (CLI) of our query scripts.
 If we think of our query scripts as computational resources, then we could think of our
     convention as a tiny application program interface (API).
 
+## query-tool-interface
 MTH suggests:
 
   * the user (or the [control-script](./control-script-README.md)) 
@@ -73,6 +74,15 @@ The  **fetch-the-query-data** task is to
 See [fetch-query-data-README.md](./fetch-query-data-README.md)
 
 
+#### 3B: query-wikipedia team
+See [query-wikipedia](./query-wikipedia-README.md) for a more detailed description
+ of  the component that should:
+ 1. fetch the wikipedia page for each species
+ 2. find the classification "box" on each page
+ 3. interpret that classification box to figure out the phylogenetic relationships.
+ 4. convert the phylogenetic relationships to the easy-to-process convention
+  described in the [Step2-README.md](./Step2-README.md#query-tool-interface)
+
 #### 3V: query-open-tree team
 A **query-open-tree** task that will need to use the
     [Open Tree of Life web APIs](https://github.com/OpenTreeOfLife/germinator/wiki/Open-Tree-of-Life-Web-APIs)
@@ -86,13 +96,7 @@ A **query-open-tree** task that will need to use the
   Python package.
   The last step will probably involve some regular expressions.
 
-#### 3C: query-wikipedia team
-A **query-wikipedia** task that will need to:
- 1. fetch the wikipedia page for each species
- 2. find the classification "box" on each page
- 3. interpret that classification box to figure out the phylogenetic relationships.
- 4. Convert that phylogenetic tree to the same easy-to-process form as used by the **query-open-tree** group
-  
+
 
 #### 3D: control script team
 The **control script** will run the whole pipeline and summarizes the
