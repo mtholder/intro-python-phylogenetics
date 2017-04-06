@@ -156,40 +156,21 @@ the names to taxonomic IDs
         #   for i in names:
         #       page_names.append(find_first_wikipedia_hit(i))
         #
-        '''
-
-        if REAL_RUN:
-            page_names = [find_first_wikipedia_hit(i) for i in names]
-        else:
-            page_names = names
+        page_names = [find_first_wikipedia_hit(i) for i in names]
         if len(set(page_names)) != 3:
             sys.exit("Did not find 3 unique top hits for the species names. Only have {}".format(set(page_names)))
         classification_lists = []
         for pn in page_names:
             try:
-                if REAL_RUN:
-                    page_obj = wikipedia.page(pn)
-                    page_html = page_obj.html()
-                else:
-                    fn = "/home/mtholder/Downloads/view-source_https___en.wikipedia.org_wiki_Brown_rat.html"
-                    page_html = open(fn, 'r').read()
+                page_obj = wikipedia.page(pn)
+                page_html = page_obj.html()
                 c = get_classification_from_wiki_html(page_html)
-                print(c)
+                status(c)
                 classification_lists.append(c)
             except:
                 error('Error extracting info from Wikipedia page for "{}"'.format(pn))
                 raise
-        '''
-        classification_lists = [
-            ['Eukaryota', 'Unikonta', 'Opisthokonta', 'Holozoa', 'Filozoa', 'Animalia', 'Eumetazoa',
-         'Bilateria', 'Nephrozoa', 'Deuterostomia', 'Chordata', 'Craniata', 'Vertebrata',
-         'Gnathostomata', 'Eugnathostomata', 'Teleostomi', 'Tetrapoda', 'Reptiliomorpha', 'Amniota',
-         'Synapsida', '.....', 'Mammaliaformes', 'Mammalia', 'Eutheria', 'Placentalia', '.....',
-         'Artiodactyla', 'Cetruminantia', 'Ruminantiamorpha', 'Ruminantia', 'Pecora', 'Cervidae',
-         'Capreolinae', 'Alces'],
-            ['Animalia', 'Chordata', 'Mammalia', 'Rodentia', 'Muridae', 'Rattus', 'R.\xa0norvegicus'],
-            ['Animalia', 'Chordata', 'Mammalia', 'Carnivora', 'Mustelidae', 'Meles', 'M.\xa0meles']
-        ]
+
         tree_integer_code = classify_tree_based_on_classification_lists(classification_lists)
         print(tree_integer_code)
     except:
