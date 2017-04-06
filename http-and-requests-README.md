@@ -1,6 +1,4 @@
-# query Open Tree task
-
-## background
+#  HTTP and requests background
 Static web sites simply serve up the same information every time a user visits.
 Many sites that are of interest to scientists are dynamic because they provide
     users with a view on a (changing) data store.
@@ -18,13 +16,14 @@ An API is an "application programmer interface" - essentially it is a protocol
 A library of code (a "package" in Python) has an API that dictates
     the correct way to interact with the library.
 
-### "front end" of web apps
+### "front end" of web apps (not the focus of this workshop)
 Front end programming technologies interact with your
     web browser using HTML (to describe the basic content to be rendered to the user),
     CSS (an ugly set of conventions for describing how to display the elements of HTML
     to the user), and JavaScript.
 JavaScript is an interpreted language that is interpreted by your browser - your
-    browser acts like the Python executable to run the JavaScript code.
+    browser acts like the Python executable to run the JavaScript code whenever
+    you load a page which contains JavaScript.
 JavaScript is great for making sites interactive, because the appearance of behavior
     of a page can change in response to user's actions without having to reload
     data from the remote web server.
@@ -40,16 +39,21 @@ But if you just want to interact with a remote data store, it is nice to be able
     to call the back end APIs from your scripts without the use of a web browser
     and without obscuring the structure of the data by embedding it in HTML tags.
 
+*Optional:* If you use Google Chrome you can enable, `Developer Tools` to show up in the `Tools`
+    menu. This will let you debug JavaScript code execution.
+    You can also examine the web service calls that the page's JavaScript performs (check
+    the "Network" tab of the dev tools, and reload the page of interest to fill that tab).
+
 ### "back end" of web apps
-`http` is a protocol for exchanging information between programs (which may be running
+HTTP is a protocol for exchanging information between programs (which may be running
     on different machines).
-Most of us are used to seeing `http` as the first part of URL, because it is the protocol
+Most of us are used to seeing HTTP as the first part of URL, because it is the protocol
     used by the web browser (a program running on your machine) fetches web pages
     from a http server (a program running on a remote "server").
-But we can also use `http` to exchange raw data in different forms.
+But we can also use HTTP to exchange raw data in different forms.
 The API layer of many website now uses the combination of:
 
-   * `http` as a protocol for how to let different programs talk to each other, and
+   * HTTP as a protocol for how to let different programs talk to each other, and
    * JSON as a syntax for representing data.
 
 JSON is a simple syntax that looks a whole lot like the syntax we use for writing
@@ -57,13 +61,13 @@ JSON is a simple syntax that looks a whole lot like the syntax we use for writin
 In fact it is an object literal syntax of JavaScript (which gives it the name
     "JavaScript Object Notation").
 
-`http` describes how programs pass streams of data back and forth to one another.
+HTTP describes how programs pass streams of data back and forth to one another.
 If you know a web API is using JSON, then your code knows how to format its input
     data and interpret the response data.
 
 The Open Tree of Life web API that we'll use for this step is a http + JSON web API.
 
-## Basics of `http`
+## Basics of HTTP
 Making an HTTP request is a lot like making a function call. 
 
   * The URL is kind of like the function name - it conveys which function to call.
@@ -136,7 +140,7 @@ If you are ever find that you can fetch data from an API when you are using your
 The `requests` package's HTTP functions take an optional `headers` argument that
     can accept a dictionary headers for the call.
 
-#### the HTTP response payload.
+#### the HTTP response payload
 From the response object returned by a requests call, you can get a string representation
     of the response body as a `content` attribute:
     
