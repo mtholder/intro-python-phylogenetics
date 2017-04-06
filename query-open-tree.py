@@ -104,6 +104,8 @@ the names to taxonomic IDs
     args = parser.parse_args()
     verbose_mode = args.verbose
     names = args.names
+    if len(set(names)) != 3:
+        sys.exit("Need three unique names as arguments\n")
     try:
         id_list = []
         for n in names:
@@ -112,6 +114,8 @@ the names to taxonomic IDs
                 sys.exit(1)
             id_list.append(i)
             status('  "{}" -> {}'.format(n, i))
+        if len(set(id_list)) != 3:
+            sys.exit("There must have been a synonym, only two IDs were found: {}\n".format(id_list))
         tree_string = get_induced_tree_string(id_list)
         status("tree_string = {}".format(tree_string))
         out_code = classify_tree_output(id_list, tree_string)
