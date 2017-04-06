@@ -60,6 +60,7 @@ In the next empty row enter your initials, and then the scientific
  names of 3 different species - one in each of the next three columns.
  
 ### 2. Sketch of tasks to be performed
+
 See [Step2-README.md](./Step2-README.md) for details.
 
 ### 3. Tasks
