@@ -136,6 +136,19 @@ If you are ever find that you can fetch data from an API when you are using your
 The `requests` package's HTTP functions take an optional `headers` argument that
     can accept a dictionary headers for the call.
 
+#### the HTTP response payload.
+From the response object returned by a requests call, you can get a string representation
+    of the response body as a `content` attribute:
+    
+    resp = requests.get(...)
+    print(resp.content)
+
+If you know that the content is encoded as JSON, then requests will convert it to the 
+    equivalent Python representation of the JSON object with the `json` attribute:
+
+    resp = requests.get(...)
+    obj = resp.json()
+
 
 ## Setup
     pip install --upgrade requests
