@@ -60,18 +60,20 @@ In the next empty row enter your initials, and then the scientific
  names of 3 different species - one in each of the next three columns.
  
 ### 2. Sketch of tasks to be performed
+See [Step2-README.md](./Step2-README.md) for details.
 
-### 3. Tasks 
+### 3. Tasks
 We'll need teams to do each of the following tasks.
 Ideally, we'd work in pairs.
 But if you'd prefer to work alone, just pick a task and come up with your
 own implementation.
 
+
 #### 3A: fetch-query-data team
 The  **fetch-the-query-data** task is to 
   1. download the spreadsheet from Google Drive, and
   2. write it as a comma-separated-value file on our local filesystem.
- 
+
 We can easily do this operation through the **File >> Download As** menu option
   of the Google spreadsheet if no one wants to learn how to do this programmatically.
   It is nice to know how to do this programmatically, so that you can have a pipeline that
