@@ -64,54 +64,68 @@ The decision to use CSV with columns 2, 3, and 4 as species names can be thought
     and the [fetch-query-data](fetch-query-data-README.md) task in this case).
 
 
-# The core tasks
+## The core tasks
 
-#### 3A: fetch-query-data task
-The  **fetch-the-query-data** task is to 
+### 3A: fetch-query-data task
+See [fetch-query-data-README.md](./fetch-query-data-README.md) for details of the task
+to:
   1. download the spreadsheet from Google Drive, and
   2. write it as a comma-separated-value file on our local filesystem.
 
-See [fetch-query-data-README.md](./fetch-query-data-README.md)
+
+This will teach:
+  * the basics of lovely [requests](http://docs.python-requests.org/en/master/) Python package, and
+  * the joys of character encoding (`codecs` package)
 
 
-#### 3B: query-wikipedia team
+### 3B: query-wikipedia team
 See [query-wikipedia](./query-wikipedia-README.md) for a more detailed description
- of  the component that should:
+ of the component that should:
  1. fetch the wikipedia page for each species
  2. find the classification "box" on each page
  3. interpret that classification box to figure out the phylogenetic relationships.
- 4. convert the phylogenetic relationships to the easy-to-process convention
-  described in the [Step2-README.md](./Step2-README.md#query-tool-interface)
+ 4. convert the phylogenetic relationships and write them out to standard out
 
-#### 3V: query-open-tree team
+The script should follow the easy-to-process convention
+  described as the query-tool-interface in 
+  the [Step2-README.md](./Step2-README.md#query-tool-interface).
+
+This will teach:
+  * use of the  [wikipedia](https://wikipedia.readthedocs.io/en/latest/) Python package, and
+  * the use of the [beautiful soup](https://www.crummy.com/software/BeautifulSoup/) a robust
+  HTML parser useful when "screen scraping" web pages.
+
+
+
+#### 3C: query-open-tree team
 A **query-open-tree** task that will need to use the
     [Open Tree of Life web APIs](https://github.com/OpenTreeOfLife/germinator/wiki/Open-Tree-of-Life-Web-APIs)
     to:
   1. find an taxonomic ID (an OTT ID) for each name, and
   2. fetch Open Tree's phylogenetic relationships for the three species
-  3. Convert that tree to some form of easy-to-process response for the control
-  script.
-  
-  This will teach some use of web API's and the lovely [requests](http://docs.python-requests.org/en/master/)
-  Python package.
-  The last step will probably involve some regular expressions.
+  3. convert the phylogenetic relationships and write them out to standard out
+
+The script should follow the easy-to-process convention
+  described as the query-tool-interface in 
+  the [Step2-README.md](./Step2-README.md#query-tool-interface).
+
+This will teach:
+  * some details of using web API's,
+  * the lovely [requests](http://docs.python-requests.org/en/master/) Python package, and
+  * the last step will probably involve some regular expressions.
 
 
 
 #### 3D: control script team
-The **control script** will run the whole pipeline and summarizes the
+The [control script](./control-script-README.md) will run the whole pipeline and summarizes the
     results.
-Specifically, this will entail:
-  1. Running the download script once to fetch the data.
-  2. Writing a "loop" to walk over every data line in the query data file. For each
-    line, the script will:
-      1. Call the **query-open-tree** procedure and interpret its results
-      2. Call the **query-wikipedia** procedure and interpret its results
-      3. Transform the results into a summary such as "the 2 phylogeny sources agreed",
-       "the 2 phylogeny sources disagreed", or "there was an error"
-  3. Report this summary to the user.
-    
+
+
 This will probably be the most basic python programming. So it might be
     a good choice if you have not done any programming.
 
+
+This will teach:
+  * basic python control flow, keywords, and data types
+  * Use of the `subprocess` module to run other programs.
 
