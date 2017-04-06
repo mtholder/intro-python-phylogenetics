@@ -118,3 +118,4 @@ the names to taxonomic IDs
         print(out_code)
     except:
         error("Exiting due to an exception being raised")
+        raise
