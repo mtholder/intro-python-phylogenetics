@@ -340,3 +340,44 @@ Remember that we need to skip the header row, and only store the second, third a
 columns of each row (the first is the submitter's initials).
 
 ## Step 5: call the other tools
+The python `subprocess` module is very helpful for running other tools.
+For instance:
+
+    import subprocess
+    command_to_run = ["echo", "5"]
+    try:
+        raw_output = subprocess.check_output(command_to_run)
+    except:
+        print("called script failed!")
+
+Would store the standard output from the `echo` program run with 1 command line argument `5`.
+
+If the called process exits with a non-zero exit code, then an exception is raised.
+That is why we put the `check_output` call in a `try: ... except:` block.
+
+If we know that our query scripts write nothing but an integer to stdout if they succeed, then
+we can use:
+
+    num_written = int(raw_output)
+
+to coerce the input from a Python string to a Python integer.
+
+If you are calling another python script, recall that Python is really the executable.
+
+    command_to_run = [sys.executable, path_to_script, arg_one, arg_two, arg_three ]
+
+is the standard way to use the same version of Python to run the script whose path is stored
+    in the variable `path_to_script`.
+
+##### Instruction 11
+Let's assume that we use the names:
+  * download-google-sheet-as-csv.py
+  * query-open-tree.py, and 
+  * query-wikipedia.py
+as the scripts written by the other tasks in this project.
+
+Finish the control script by replacing the placeholder code in `download_query_data`,
+`get_phylogeny_according_to_open_tree`, and `get_phylogeny_according_to_wikipedia`.
+
+If the other groups are not down, you can test with `skeletons/mock-query.py`.
+Take a look at that code
