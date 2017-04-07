@@ -35,115 +35,179 @@ Write the output to `stderr` every time you have the next step completed, and
 This makes it much easier to debug than trying to write the whole thing.
 
 
+### First step - finding the Wikipedia page for a species
+Wikipedia pages each have a unique title, but the title of the page for a species is usually its
+    common name (not its scientific name).
+In most cases, the first search hit for a scientific name will be the Wikipedia page for that
+    species.
+For the purposes of this tutorial, we can just assume that we want the first hit.
 
-### First step - getting an OTT ID
-#### A comment on biological nomenclature
-An unfortunate aspect of biological taxonomy is the fact that the mapping of a name to a species
- is not unique.
-There is not one universally recognized name for each species, and some names apply to more
-    than one species (although this is rare).
-Figuring out what biological taxon a name string refers to is an obnoxious bioinformatics challenge.
-The general solution (used widely in computing, not just by Open Tree) is to convert a problematic
-    name to a reliable, unique ID.
-Open Tree web API has some ability to help with the complexities of typos, multiple names for the same
-    taxon, and multiple species being assigned the same name.
-
-#### Using the API to get an ID
-For the purpose of this tutorial, I **strongly** recommend that you write the query tool to simply
-    exit with an error code if there is not a unique match for a name.
-Check out the [match_names](https://github.com/OpenTreeOfLife/germinator/wiki/TNRS-API-v3#match_names)
-    API call to see how you can convert a taxon name to an Open Tree Taxon ID (an "OTT ID" in the
-    jargon of the rest of the API).
-
-The API lets you submit a list of names, but I recommend that you just make a seaparate
-    API call for each name to make the coding easier on your end.
-
+Fortunately, the `wikipedia.search` function will return a list of page titles for a given
+    scientific name.
 
 **Instruction 3:**
-For the `first_name` call the appropriate function in `requests`, and print the body of 
-the response.
+Write a Python function that takes a string that is the scientific name for a species and
+returns the page title of the first search hit for that species name.
+If there are no hits, your function should either:
+  * write an error message to `sys.stderr` and call `sys.exit(1)`, or
+  * raise an exception.
+
+### Second step - fetch the HTML for the page for a species
+If you call `wikipedia.page(name)`, Python will perform an HTTP GET operation for the page on 
+    Wikipedia that has the value of `name` as its title.
+Calling the `.html()` method on the response object returned by the previous function will give you
+   the HTML for the page (as a Python string)
 
 **Instruction 4:**
-Temporarily introduce a typo in the URL you are using for the call, and make sure
-your script stops with an error message and code when the web service call fails.
+For a page name returned from instruction 3, capture the HTML for that page in a python variable.
+
+### Third step - extract a list of taxonomic names from the HTML
+This part is tricky.
+
+We want to find out what taxonomy Wikipedia has for the 3 species that our script has been given.
+We are using the classification as a proxy for the phylogeny, but it is not obvious how to 
+    get the classification from the page.
+Teaching Python to read the English text is out of the question, as "natural language processing"
+    is a very challenging problem in computer science.
+
+Fortunately, even though we are processing HTML, Wikipedia has some special structures that it uses
+    in certain contexts.
+For example, if you look at a page for a species (such as the page for the 
+[European badger](https://en.wikipedia.org/wiki/European_badger)), you'll see a box on the right
+    side of the page that has a table with a header (somewhere in the box) with the phrase
+    "Scientific classification".
+
+So, let's just write a script to look for that box and that classification part of the box.
+The formatting for that box is pretty consistent.
+Even though most of Wikipedia is edited in a fairly free-form manner by users, these taxoboxes have
+a special WikiText syntax.
+And they are rendered (by Wikipedia's servers) into a pretty regular style of HTML.
+That will make our task alot easier.
+
+A full discussion of HTML is beyond the scope of this workshop, but the key aspect of it is that
+    1. HTML consists of nested tags (for example, the `head` and `body` tags are found inside 
+        the `html` tag)
+    2. A tag can have attributes, other tags, and text inside of it.
+
+
+We can avoid the details, because the BeautifulSoup library has a good HTML parser, and we can 
+    use it to navigate the HTML document.
+
+Look at https://www.crummy.com/software/BeautifulSoup/bs4/doc/#quick-start to see how you can
+convert a string containing HTML (which we have from the previous step) into a "parsed"
+representation of the document; this representation is named `soup` in those docs.
+
 
 **Instruction 5:**
-Revert your typo to get the call working again.
+Create a "soup" object for the HTML from your first species name.
+
+
+#### Getting the "taxo box"
+It appears that the table with the classification information is always an HTML `table` element with
+a `class` attribue that is assigned the value `"infobox biota"`.
+Importantly, it appears to be the only table in a page that has that value of the `class` attribute.
+
+I determined this by using my web browser's "View Source" feature, although it is probably documented
+    somewhere in Wikipedia.
 
 **Instruction 6:**
-Extract the content of a successful call as a python object.
-[This section of the docs](./http-and-requests-README.md#the-HTTP-response-payload) will probably
-be helpful.
+Take a look at
+    [the documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#searching-by-css-class)
+    for using BeautifulSoup to find any tags that have a particular value of the class attribute.
+Using this info, extract a reference to the classification infobox from the "soup" that you created
+    in the previous step.
+
+#### Extracting a list of taxonomic names from the "taxo box"
+We wanted a referent to the "taxo box" because it has a more regular syntax compared to the rest of
+    the page.
+But it is not completely regular.
+
+Like all HTML `table` tags, the taxo box table is composed of a series of `tr` tags (`tr` stands 
+for "table row")
+It appears that the "rules" for these taxo boxes are:
+  * some number (perhaps 0) of `tr` tags  with fairly eclectic info (that we can ignore).
+  * a key header we can look for.
+  * a series of table rows that have 2 or 3 columns. The first holds a taxonomic rank, and the second
+    has the taxonomic name that we want to store.
+  * possibly more rows with ecletic info
+
+So we can find the names by:
+  1. looping over the `tr` elements.
+  2. ignoring everything until we find the header.
+  3. then storing the text from the second column of every 2 or 3 column row
+
+The row with a header element we are looking is:
+  * a `tr` element that contains
+  * a `th` (table header) element that contains
+  * an `a` (anchor or "link") element that has
+  * the text value equal to "Scientific classification"
+  
+Note that if we captured the table as the variable `x` then a construct like:
+
+    for row in x.find_all("tr"):
+        print(row)
+
+is a way to loop over every row of the table.
+We can use a boolean to tell whether or not we have found the "magic" header row.
+So we can capture the names in the table with something like:
+
+    tax_names = []
+    found_header = False
+    for row in x.find_all("tr"):
+        if not found_header:
+            found_header = row_is_the_magic_header(row)
+        else:
+            if row_has_two_or_three_columns(row):
+                tax_names.append(get_text_second_column(row))
+    if len(tax_names) == 0:
+        raise ValueError("Was not able to find a taxonomy in the 'infobox biota' part of a species page")
 
 **Instruction 7:**
-Figure out how to extract just the OTT ID from the python object you got from the response.
-
+Put that template code (or something equivalent) in your code, and then see if you can
+write the functions:
+  * `row_is_the_magic_header` to take an object that represents a `tr` tag and return True if
+    it has contains a `th` with an `a` with the text "Scientific classification". 
+    The [navigating via tag names](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-using-tag-names)
+    documentation will probably help you.
+  * `row_has_two_or_three_columns` that take an object that represents a `tr` tag and returns True
+    if it contains 2 or 3 `td` tags ("td" stands for "table data")
+  * `get_text_second_column` should take a `tr` tag, get the second `td` inside it, and return the
+    text content of that tag (see [get_text](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text)
+    and also note that it makes sense to [strip](https://docs.python.org/3/library/stdtypes.html?highlight=str.strip#str.strip)
+    any extraneous whitespace from the text).
+    
+### Fourth step
+The taxonomic names extracted in the previous step will be from the most inclusive taxonomic 
+name (e.g. "Animals") to the least inclusive (the name of the queried species).
 
 **Instruction 8:**
-Now convert the other two names to OTT IDs.
-If you write a function (see http://swcarpentry.github.io/python-novice-inflammation/06-func/)
-for the conversion of name to ID, this instruction will be easy to do.
+Run the previous operations on each of your input species names to get 3 lists of taxonomic names.
+This will be easiest to do if you have a wrap all of the previous steps in a function, and then
+call that function for each input name.
+
+At this point we should have three lists such as:
+    
+    first = ['Animalia', 'Chordata', 'Mammalia', 'Carnivora', 'Mustelidae', 'Meles', 'M.\xa0meles']
+    second = ['Animalia', 'Chordata', 'Aves', 'Galliformes', 'Phasianidae', 'Phasianinae', 'Gallus', 'G.\xa0gallus']
+    third = ['Animalia', 'Chordata', 'Mammalia', 'Chiroptera', 'Cistugidae', 'Cistugo', 'C.\xa0seabrae']
+
+(the `\xa0` that you may have noticed between the abbreviation of the Genus name and the specific
+ epithet in the last element of the list is a code for a
+ [non-breaking space](https://en.wikipedia.org/wiki/Non-breaking_space).
+I admit that it is ugly, but it won't interfere with the script we are writing).
+
+How can we convert these three lists into a statement of which pair of species is most closely related?
+
+If we find the last (the highest) index in a list that is found in another list, then then that is
+    a measure of how similar the species are.
+For instance `first` and `second` agree on elements 0 and 1, so 1 is the highest index in `first`
+    that denotes an element that is shared with `second`.
+However, `first` and `third` share indices 0, 1, and 2 in common.
+Thus `first` and `third` are closest relatives.
+
+Recall that our script is supposed to write `0` in the case of a tie, and otherwise the number
+that corresponds to the furthest taxon.
 
 **Instruction 9:**
-You should exit with an error if there are <3 distinct IDs (this might happen if you get the
-same name from the user twice or if two of the names passed in are synonyms for the same taxon).
-
-### Second step - getting a tree for a set of OTT IDs
-If you have 3 OTT IDs, you can get a string representation of phylogenetic tree for the species using
-    an [induced_subtree](https://github.com/OpenTreeOfLife/germinator/wiki/Synthetic-tree-API-v3#induced_subtree)
-    API method call.
-If you tell the server to use the `"id"` form of `label_format`, then the string will be pretty 
-    easy to deal with because it will only have the characters found in the "newick" tree 
-    representation format (see below) and labels of the form `ott####`.
-
-
-
-**Instruction 10:**
-Use `requests` to perform the induced subtree call for your OTT Ids.
-
-**Instruction 11:**
-Extract the newick string as a variable from the response.
-
-
-### Third step - interpreting the newick tree representation
-In this section we will describe how to interpt the
- [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format for this excercise.
-In this text format, parentheses group sets of species that are more closely related to each other
-    than they are to any taxon that is listed outside of that group of parentheses.
-Commas separate species or groups.
-A semicolon marks the end.
-Other characters are labels of species or groups of species.
-
-The format is general, but we only have a 3 species, so we don't need to write a general parser
-    of the format.
-If, for example, the OTT Ids we are interest in are `1`, `2`, and `3` then there are only three
- types of response we could get:
-  1. 1 set of parentheses: `(ott1,ott2,ott3)some_label_here;` which indicates that Open Tree does
-    not have a guess about which of these 3 species are more closely related to each other.
-  2. 2 sets of parentheses. The following 2 trees are equivalent:
-     * `(ott1,(ott2,ott3)some_label)some_other_label;`
-     * `((ott3,ott2)some_label,ott1)some_other_label;`
-
-So, for our limited purposes, we just need to be able to recognize if the returned newick string
-has 2 sets of parentheses.
-If it does, we need to find which of the 3 OTT Ids that we asked about is **not** inside the
-    inner set of parentheses.
-This is the taxon that is furthest from the other 2 species.
-
-### Final step - convert the tree to a number.
-Recall that (according to [Step2-README.md](./Step2-README.md#query-tool-interface)), on success
-the script should write 0, 1, 2, or 3
-
-
-
-**Instruction 12:**
-Convert the response newick string to the appropriate number.
-Regular expressions (see https://docs.python.org/2/howto/regex.html) may be handy.
-
-Call the result `tree_integer_code`
-
-
-
-**Instruction 13:**
-Test your script out with a few sets of species names.
-
+Write a function that takes the 3 lists of taxonomic names and returns a code from 0 - 4 to 
+    indicate what Wikipedia has to say about the phylogenetic relationships of the taxa.
