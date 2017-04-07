@@ -79,19 +79,22 @@ For example, if you look at a page for a species (such as the page for the
 
 So, let's just write a script to look for that box and that classification part of the box.
 The formatting for that box is pretty consistent.
-Even though most of Wikipedia is edited in a fairly free-form manner by users, these taxoboxes have
+Even though most of Wikipedia is edited in a fairly free-form manner by users, these "taxo boxes" have
 a special WikiText syntax.
 And they are rendered (by Wikipedia's servers) into a pretty regular style of HTML.
 That will make our task alot easier.
 
 A full discussion of HTML is beyond the scope of this workshop, but the key aspect of it is that
-    1. HTML consists of nested tags (for example, the `head` and `body` tags are found inside 
-        the `html` tag)
-    2. A tag can have attributes, other tags, and text inside of it.
+
+  1. HTML consists of a tree of nested tags (for example, the `head` and `body` tags are found inside 
+        the `html` tag). If you look at a document you'll see an open tag (like `<html>` and
+        a closing tag such as `</html>` use to convey the nesting. Every tag in between the open
+        and close is considered to be "inside" the tag).
+  2. A tag can contain attributes, other tags, and text.
 
 
-We can avoid the details, because the BeautifulSoup library has a good HTML parser, and we can 
-    use it to navigate the HTML document.
+We can avoid learning the details of HTML at this point, because the BeautifulSoup library has 
+    an excellent HTML parser, and we can just use it to navigate the HTML document.
 
 Look at https://www.crummy.com/software/BeautifulSoup/bs4/doc/#quick-start to see how you can
 convert a string containing HTML (which we have from the previous step) into a "parsed"
@@ -105,7 +108,7 @@ Create a "soup" object for the HTML from your first species name.
 #### Getting the "taxo box"
 It appears that the table with the classification information is always an HTML `table` element with
 a `class` attribue that is assigned the value `"infobox biota"`.
-Importantly, it appears to be the only table in a page that has that value of the `class` attribute.
+Importantly, it appears to be the *only* table in a page that has that value of the `class` attribute.
 
 I determined this by using my web browser's "View Source" feature, although it is probably documented
     somewhere in Wikipedia.
@@ -118,18 +121,18 @@ Using this info, extract a reference to the classification infobox from the "sou
     in the previous step.
 
 #### Extracting a list of taxonomic names from the "taxo box"
-We wanted a referent to the "taxo box" because it has a more regular syntax compared to the rest of
+We wanted to get a python reference to the "taxo box" because it has a more regular syntax compared to the rest of
     the page.
 But it is not completely regular.
 
 Like all HTML `table` tags, the taxo box table is composed of a series of `tr` tags (`tr` stands 
-for "table row")
+for "table row").
 It appears that the "rules" for these taxo boxes are:
-  * some number (perhaps 0) of `tr` tags  with fairly eclectic info (that we can ignore).
+  * some number (perhaps 0) of `tr` tags  with fairly eclectic info (we can ignore these rows).
   * a key header we can look for.
   * a series of table rows that have 2 or 3 columns. The first holds a taxonomic rank, and the second
     has the taxonomic name that we want to store.
-  * possibly more rows with ecletic info
+  * possibly more rows with ecletic info (which we can ignore).
 
 So we can find the names by:
   1. looping over the `tr` elements.
@@ -149,7 +152,7 @@ Note that if we captured the table as the variable `x` then a construct like:
 
 is a way to loop over every row of the table.
 We can use a boolean to tell whether or not we have found the "magic" header row.
-So we can capture the names in the table with something like:
+Thus, we can capture the names in the table with something like:
 
     tax_names = []
     found_header = False
