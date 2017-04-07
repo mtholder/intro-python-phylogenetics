@@ -112,6 +112,8 @@ def get_phylogeny_according_to_open_tree(first_sp, second_sp, third_sp):
 
 def gen_query(script_name, first_sp, second_sp, third_sp):
     command_to_run = [sys.executable, script_name, first_sp, second_sp, third_sp]
+    if VERBOSE_MODE:
+        command_to_run.append('--verbose')
     try:
         raw_output = subprocess.check_output(command_to_run)
         return int(raw_output)
