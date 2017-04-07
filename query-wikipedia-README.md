@@ -1,4 +1,4 @@
-# query Open Tree
+# query Wikipedia
 Refer to the description of the query-tool-interface in 
   the [Step2-README.md](./Step2-README.md#query-tool-interface) 
   for the rules that this script needs to conform to.
