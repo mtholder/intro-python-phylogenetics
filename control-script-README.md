@@ -238,7 +238,7 @@ There is even some elegance to:
     
     FAILED = 0
     DONT_KNOW = 1
-    CHOSE_MOST_DISTANT = 3
+    CHOSE_MOST_DISTANT = 2
     results = [[0, 0, 0],
                [0, 0, 0],
                [0, 0, 0],
