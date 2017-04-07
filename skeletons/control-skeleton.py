@@ -36,9 +36,19 @@ SCRIPT_NAME = _script_path_fragments[-1]
 #   that is the second argument:
 VERBOSE_MODE = '--verbose' in sys.argv
 
+# Now we have some functions to help us output info to the user.
+# In Python a line starting with "def " is a function definition. The syntax is:
+#   def FUNCTION_NAME_GOES_HERE(SOME_NUMBER, OF_ARGUMENTS_LISTED, HERE):
+#       INDENTED INSTRUCTIONS HERE
 
 def warn(msg):
     """Writes `msg` to the stderr stream. Adds the script name as prefix and a newline."""
+    # the next line calls a method (which is like a function) of the str class which
+    #   Python uses to store character strings.
+    # Python interprets the literal "{} WARNING: {}\n" as a object of type str.
+    # That object has a format method that can be called.
+    # Calling it will return a new str object in which the {} characters are replaces with
+    #   the values that are passed into the format method call.
     decorated_message = "{} WARNING: {}\n".format(SCRIPT_NAME, msg)
     sys.stderr.write(decorated_message)
     sys.stderr.flush()
@@ -72,12 +82,25 @@ def download_query_data(doc_id="16AZ9Po7h8Qa3ink55bZn4GaiS2pBPVQMMuDd2TBIByA"):
     example path will work, because I have a tiny query set in that location.
     """
     warn("We still have a dummy version of download_query_data !")
-    return "testdata/ex-query.csv"
+    example_filepath = "testdata/ex-query.csv"
+    return example_filepath
 
-def parse_queries_from_csv(filename):
+def parse_queries_from_csv(the_csv_filepath):
+    """Read the local filesystem's copy of the query data are return a list of 
+    three species for each query found in the file.
+    To do this we return a list of lists.
+    """
     warn("We still have a dummy version of parse_queries_from_csv !")
+    warn('We should really be reading from "{}" here!'.format(the_csv_filepath))
+    # [] is the "literal syntax" for a empty list. Thus the value of
+    # example_data is a list of 3 lists.
+    # The first 2 elements are lists that we expect to generate a result from Open Tree and
+    #   Wikipedia because these are 3 real species names.
+    # The first string in the third list is not a valid name, so we should expect
+    #   an error from the query functions.
     example_data = [['Caretta caretta', 'Babirusa babyrussa', 'Zea mays'],
-                    ["Rattus norvegicus", "Alces alces", "Meles meles"]
+                    ["Rattus norvegicus", "Alces alces", "Meles meles"],
+                    ["not really a species name", "Rattus norvegicus", "Alces alces"]
                    ]
     return example_data
 
