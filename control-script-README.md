@@ -166,7 +166,7 @@ Can you figure out how to use the python string formatting to do this?
 Remember that you need to run the script with the `--verbose` command line flag to 
     activate the `debug` messages!
 
-## Accumulate the results
+## Step 3: Accumulate the results
 We are actually close to done implementing the sketch, but our sketch is vague with respect
 to how we summarize the data.
 For any query for set of 3 species and a web service we could have 1 of 3 outcomes:
@@ -296,3 +296,47 @@ Notice that `==` is a test for equality (while `=` was the name binding operator
 Use conditionals to process the return values of the query functions to correctly update
 your counts.
 
+
+## Step 4: print the results
+
+##### Instruction 8
+Pass your results counters in to the `write_summary` function and then use
+string formatting an print statements two write them to standard output in an
+interpretable manner.
+
+##### Instruction 9
+Run it. Do you see the results that make sense give our mock function?
+
+
+
+## Step 5: write a real parser
+OK now we need to do the real stuff, not just use the mock functions.
+
+First lets parse the example input in our `parse_queries_from_csv` function.
+
+If `fn` is a filepath we can do the following:
+
+    with open(fn, "r") as input_stream:
+        for line in input_stream:
+            # line will be bound to a string ending with a newline here.
+            line_without_extra_whitespace = line.strip()
+            print(line_without_extra_whitespace)
+
+to print every line in a file.
+
+If we have a list of queries initialized to an empty list before this loop, then
+    we can use the `append` method of a list to add another item to the list.
+
+If we have a string called `y`, and we want to break it into a list of words where a comma is
+    the separator, then we can use `broken = y.split(",")`
+
+Note that if you had a list `q` then the "slice" denoted `q[1:]`
+    would be a new list that omits the first element (the `q[0]` element).
+
+##### Instruction 10
+Can you use that info to fill in the body of `parse_queries_from_csv` function?
+
+Remember that we need to skip the header row, and only store the second, third and fourth
+columns of each row (the first is the submitter's initials).
+
+## Step 5: call the other tools
