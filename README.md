@@ -17,11 +17,11 @@ gorillas."
 That statement means that the most recent common ancestor of humans and gorillas was a 
 species that lived earlier than the most recent common ancestor of humans and chimps.
 
-Frequently we depict these relationships in a tree. See for example, this:
+Frequently we depict these relationships in a tree. See for example:
  
 <img src="https://pandasthumb.org/uploads/2014/primate-family-tree-780x520_0.gif" width="70%" alt="greatapetree" />
 
-nice image of the phylogenetic tree of Primates that appeared on
+This nice image of the phylogenetic tree of Primates that appeared on
 [this blog post by Emily Thompson](https://pandasthumb.org/archives/2014/10/the-family-tree.html);
 apparently the image is originally from 
 [the human origins exhibit by the Smithsonion](http://humanorigins.si.edu/evidence/genetics).
