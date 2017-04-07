@@ -142,10 +142,10 @@ The `requests` package's HTTP functions take an optional `headers` argument that
 
 #### the HTTP response payload
 From the response object returned by a requests call, you can get a string representation
-    of the response body as a `content` attribute:
+    of the response body as a `text` attribute:
     
     resp = requests.get(...)
-    print(resp.content)
+    print(resp.text)
 
 If you know that the content is encoded as JSON, then requests will convert it to the 
     equivalent Python representation of the JSON object with the `json` attribute:
