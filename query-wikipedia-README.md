@@ -17,12 +17,14 @@ package and [beautiful soup](https://www.crummy.com/software/BeautifulSoup/) a r
     pip install --upgrade beautifulsoup4
 
 
-**Instruction 1:** Start with the steps described in:
+##### Instruction 1
+Start with the steps described in:
  [query-script-skeleton-README.md](./query-script-skeleton-README.md)
 
 ## Next
 
-**Instruction 2:** Add
+##### Instruction 2
+Add
 
     import wikipedia
     from bs4 import BeautifulSoup
@@ -35,7 +37,7 @@ Write the output to `stderr` every time you have the next step completed, and
 This makes it much easier to debug than trying to write the whole thing.
 
 
-### First step - finding the Wikipedia page for a species
+### First task - finding the Wikipedia page for a species
 Wikipedia pages each have a unique title, but the title of the page for a species is usually its
     common name (not its scientific name).
 In most cases, the first search hit for a scientific name will be the Wikipedia page for that
@@ -45,23 +47,23 @@ For the purposes of this tutorial, we can just assume that we want the first hit
 Fortunately, the `wikipedia.search` function will return a list of page titles for a given
     scientific name.
 
-**Instruction 3:**
+##### Instruction 3
 Write a Python function that takes a string that is the scientific name for a species and
 returns the page title of the first search hit for that species name.
 If there are no hits, your function should either:
   * write an error message to `sys.stderr` and call `sys.exit(1)`, or
   * raise an exception.
 
-### Second step - fetch the HTML for the page for a species
+### Second task - fetch the HTML for the page for a species
 If you call `wikipedia.page(name)`, Python will perform an HTTP GET operation for the page on 
     Wikipedia that has the value of `name` as its title.
 Calling the `.html()` method on the response object returned by the previous function will give you
    the HTML for the page (as a Python string)
 
-**Instruction 4:**
+##### Instruction 4
 For a page name returned from instruction 3, capture the HTML for that page in a python variable.
 
-### Third step - extract a list of taxonomic names from the HTML
+### Third task - extract a list of taxonomic names from the HTML
 This part is tricky.
 
 We want to find out what taxonomy Wikipedia has for the 3 species that our script has been given.
@@ -101,7 +103,7 @@ convert a string containing HTML (which we have from the previous step) into a "
 representation of the document; this representation is named `soup` in those docs.
 
 
-**Instruction 5:**
+##### Instruction 5
 Create a "soup" object for the HTML from your first species name.
 
 
@@ -113,7 +115,7 @@ Importantly, it appears to be the *only* table in a page that has that value of 
 I determined this by using my web browser's "View Source" feature, although it is probably documented
     somewhere in Wikipedia.
 
-**Instruction 6:**
+##### Instruction 6
 Take a look at
     [the documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#searching-by-css-class)
     for using BeautifulSoup to find any tags that have a particular value of the class attribute.
@@ -165,7 +167,7 @@ Thus, we can capture the names in the table with something like:
     if len(tax_names) == 0:
         raise ValueError("Was not able to find a taxonomy in the 'infobox biota' part of a species page")
 
-**Instruction 7:**
+##### Instruction 7
 Put that template code (or something equivalent) in your code, and then see if you can
 write the functions:
   * `row_is_the_magic_header` to take an object that represents a `tr` tag and return True if
@@ -178,12 +180,16 @@ write the functions:
     text content of that tag (see [get_text](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#get-text)
     and also note that it makes sense to [strip](https://docs.python.org/3/library/stdtypes.html?highlight=str.strip#str.strip)
     any extraneous whitespace from the text).
-    
-### Fourth step
+
+If you want to make your parser more robust, see [Optional Instruction #10](./#Optional-Instruction-#10)
+
+### Fourth task
+Finally we need to interpret the lists of ancestral taxa an convert it to a numeric representation
+    as described in our [query-tool-interface](./Step2-README.md#query-tool-interface).
 The taxonomic names extracted in the previous step will be from the most inclusive taxonomic 
 name (e.g. "Animals") to the least inclusive (the name of the queried species).
 
-**Instruction 8:**
+##### Instruction 8
 Run the previous operations on each of your input species names to get 3 lists of taxonomic names.
 This will be easiest to do if you have a wrap all of the previous steps in a function, and then
 call that function for each input name.
@@ -197,7 +203,7 @@ At this point we should have three lists such as:
 (the `\xa0` that you may have noticed between the abbreviation of the Genus name and the specific
  epithet in the last element of the list is a code for a
  [non-breaking space](https://en.wikipedia.org/wiki/Non-breaking_space).
-I admit that it is ugly, but it won't interfere with the script we are writing).
+Leaving it in the string is ugly, but it won't interfere with the script we are writing).
 
 How can we convert these three lists into a statement of which pair of species is most closely related?
 
@@ -211,6 +217,44 @@ Thus `first` and `third` are closest relatives.
 Recall that our script is supposed to write `0` in the case of a tie, and otherwise the number
 that corresponds to the furthest taxon.
 
-**Instruction 9:**
+##### Instruction 9
 Write a function that takes the 3 lists of taxonomic names and returns a code from 0 - 4 to 
     indicate what Wikipedia has to say about the phylogenetic relationships of the taxa.
+
+# Finished!
+
+If you store the numeric representation in `tree_integer_code` in the skeleton code that we
+    started with, then the script should run.
+
+##### Optional Instruction 10
+When I ran this, I found that sometimes that "magic" header row in the "taxo box" seemed to be
+the last row in the table.
+It was a bit hard to repropduce, but I think that it has to do with whether or not the Wikipedia
+    servers are automatically expanding the full taxonomy into a brief form of the taxonomy or
+    not.
+Sometimes these details vary depending on the HTTP headers used in a call. 
+It can be frustrating, because the source that you see when you use your browser's "View Source"
+   feature can vary from the HTML that you get when you fetch the page programmatically.
+The 2 general strategies are either to:
+   1. Mimic the browser's request more faithfull (Google
+    Chrome's dev tools have a handy "copy this Network call as cURL" which makes it easy
+    to see the details of call used by the browser), or
+   2. Save the html from your script so that you can write a more robust parser.
+
+I found that in the case of some pages (like the page for the 
+[Moose](https://en.wikipedia.org/wiki/Moose)), the fetch via the wikipedia package
+    seemed to lack the 2 column rows. 
+The common feature of failing pages seemed to be the presence of pencil Edit icon next 
+    to the "Scientific classification" header which was linked to a URL that 
+    started with "/wiki/Template:Taxonomy/".
+So for the Moose, the link was to the full ancestral taxon page of 
+    [the genus Alces](https://en.wikipedia.org/wiki/Template:Taxonomy/Alces).
+
+So, I wrote my parser to look for that link.
+If it was found, I parsed it instead of the primary species page.
+The parsing was very similar: look for an `<table class="infobox biota">`
+    then grab the text of the second column of every 2 or 3 column row of the table.
+
+
+If you want your parser to work on a wider range of species pages, modify the code for
+    returning a list of taxonomic names to deal with this case.
