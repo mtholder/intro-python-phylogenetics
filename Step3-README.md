@@ -10,7 +10,7 @@ to:
 
 
 This will teach:
-  * the basics of lovely [requests](http://docs.python-requests.org/en/master/) Python package, and
+  * the basics of the lovely [requests](http://docs.python-requests.org/en/master/) Python package, and
   * the joys of character encoding (`codecs` package)
 
 
@@ -33,7 +33,7 @@ This will teach:
 
 
 
-#### 3C: query-open-tree team
+### 3C: query-open-tree team
 A **query-open-tree** task that will need to use the
     [Open Tree of Life web APIs](https://github.com/OpenTreeOfLife/germinator/wiki/Open-Tree-of-Life-Web-APIs)
     to:
@@ -52,7 +52,7 @@ This will teach:
 
 
 
-#### 3D: control script team
+### 3D: control script team
 The [control script](./control-script-README.md) will run the whole pipeline and summarizes the
     results.
 
