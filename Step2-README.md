@@ -22,17 +22,17 @@ Since we are writing the control script and the scripts for the queries to Open 
 
 In the context of this exercise we want to make it easy for:
   1. the implementers of the [query-open-tree](./query-open-tree-README.md) task to
-    express what phylogenetic tree Open Tree reports for the 3 species.
+    express which phylogenetic tree for the 3 species is reported by Open Tree.
   2. the implementers of the [query-wikipedia](./query-wikipedia-README.md) task to
     express what phylogenetic tree is implied by the Wikipedia taxonomy for the 3 species.
   3. the implementers of the [control-script](./control-script-README.md) task to
     be able to interpret the results of the 2 query tasks.
 
-We need to establish a convention for the query tools to tell the control script the answer, and
-    it make sense to use the same convention in the query-open-tree tool and
+We need to establish a convention for the query tools to tell the control script the answer.
+    It makes sense to use the same convention in the query-open-tree tool and
     the query-wikipedia tool.
 
-We are really defining our an *interface* in our pipeline.
+We are really defining an *interface* in our pipeline.
 We could think of it as the command line interface (CLI) of our query scripts.
 If we think of our query scripts as computational resources, then we could think of our
     convention as a tiny application program interface (API).
