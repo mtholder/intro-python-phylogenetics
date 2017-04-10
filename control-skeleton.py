@@ -111,13 +111,12 @@ def get_phylogeny_according_to_open_tree(first_sp, second_sp, third_sp):
 
 def get_phylogeny_according_to_wikipedia(first_sp, second_sp, third_sp):
     import subprocess
-    command_to_run = [sys.executable, "query-wikipedia.py", "--verbose", first_sp, second_sp, third_sp]
+    command_to_run = [sys.executable, "query-wikipedia.py", first_sp, second_sp, third_sp]
     try:
         raw_output = subprocess.check_output(command_to_run)
     except:
         return None
     return int(raw_output)
-
 def write_summary(results):
     d, a, t = results
     print("{} disagreements".format(d))
