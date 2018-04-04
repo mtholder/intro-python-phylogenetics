@@ -36,5 +36,5 @@ Options here include:
 
 Regardless of how you run python, it will also be useful to have
   * [cURL](https://curl.haxx.se/download.html)
-  * Google Chrome
+  * [Google Chrome](https://www.google.com/chrome/) or [Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools)
   * The [pip](https://pypi.python.org/pypi/pip) command-line tool for installing python packages.
