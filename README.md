@@ -17,7 +17,7 @@ For most people, editing and running Python this will mean being able to:
 
   1. launch a terminal session. See the discussion for your platform on https://swcarpentry.github.io/shell-novice/setup.html
 
-  2. launch a text editor (not a word processor). See (Atom)[https://atom.io/] or (SublimeText)[https://www.sublimetext.com/] for multiple platforms or [Notepad++](https://notepad-plus-plus.org/) for Windows.
+  2. launch a text editor (not a word processor). See [Atom](https://atom.io/) or [SublimeText](https://www.sublimetext.com/) for multiple platforms or [Notepad++](https://notepad-plus-plus.org/) for Windows.
 
   3. run the Python 3 interpreter. See [Python downloads](https://www.python.org/downloads/)
 
